@@ -5,56 +5,36 @@
 
 @section('content')
 <!-- Statistics Cards -->
-<div class="row g-4 mb-4">
+<div class="row g-3 mb-4">
     <div class="col-md-3">
         <div class="card stat-card">
-            <div class="card-body d-flex align-items-center">
-                <div class="stat-icon bg-primary bg-opacity-10 text-primary me-3">
-                    <i class="bi bi-people"></i>
-                </div>
-                <div>
-                    <h3 class="mb-0">{{ number_format($stats['total_users']) }}</h3>
-                    <small class="text-muted">Total Users</small>
-                </div>
+            <div class="card-body py-3">
+                <small class="text-muted d-block mb-1">Total Users</small>
+                <h3 class="mb-0 fw-semibold">{{ number_format($stats['total_users']) }}</h3>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card stat-card">
-            <div class="card-body d-flex align-items-center">
-                <div class="stat-icon bg-success bg-opacity-10 text-success me-3">
-                    <i class="bi bi-clipboard-check"></i>
-                </div>
-                <div>
-                    <h3 class="mb-0">{{ number_format($stats['total_evaluations']) }}</h3>
-                    <small class="text-muted">Total Evaluations</small>
-                </div>
+            <div class="card-body py-3">
+                <small class="text-muted d-block mb-1">Total Evaluations</small>
+                <h3 class="mb-0 fw-semibold">{{ number_format($stats['total_evaluations']) }}</h3>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card stat-card">
-            <div class="card-body d-flex align-items-center">
-                <div class="stat-icon bg-warning bg-opacity-10 text-warning me-3">
-                    <i class="bi bi-tags"></i>
-                </div>
-                <div>
-                    <h3 class="mb-0">{{ number_format($stats['total_categories']) }}</h3>
-                    <small class="text-muted">Categories</small>
-                </div>
+            <div class="card-body py-3">
+                <small class="text-muted d-block mb-1">Categories</small>
+                <h3 class="mb-0 fw-semibold">{{ number_format($stats['total_categories']) }}</h3>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card stat-card">
-            <div class="card-body d-flex align-items-center">
-                <div class="stat-icon bg-danger bg-opacity-10 text-danger me-3">
-                    <i class="bi bi-envelope"></i>
-                </div>
-                <div>
-                    <h3 class="mb-0">{{ number_format($stats['unread_messages']) }}</h3>
-                    <small class="text-muted">Unread Messages</small>
-                </div>
+            <div class="card-body py-3">
+                <small class="text-muted d-block mb-1">Unread Messages</small>
+                <h3 class="mb-0 fw-semibold">{{ number_format($stats['unread_messages']) }}</h3>
             </div>
         </div>
     </div>
@@ -64,13 +44,13 @@
 <div class="row g-4 mb-4">
     <div class="col-lg-8">
         <div class="chart-container">
-            <h5 class="mb-4"><i class="bi bi-graph-up me-2"></i>Monthly Evaluations ({{ date('Y') }})</h5>
+            <h5 class="mb-4">Monthly Evaluations ({{ date('Y') }})</h5>
             <canvas id="monthlyChart" height="100"></canvas>
         </div>
     </div>
     <div class="col-lg-4">
         <div class="chart-container">
-            <h5 class="mb-4"><i class="bi bi-pie-chart me-2"></i>User Distribution</h5>
+            <h5 class="mb-4">User Distribution</h5>
             <canvas id="userDistributionChart" height="200"></canvas>
         </div>
     </div>
@@ -79,13 +59,13 @@
 <div class="row g-4 mb-4">
     <div class="col-lg-6">
         <div class="chart-container">
-            <h5 class="mb-4"><i class="bi bi-bar-chart me-2"></i>Category Ratings</h5>
+            <h5 class="mb-4">Category Ratings</h5>
             <canvas id="categoryRatingChart" height="200"></canvas>
         </div>
     </div>
     <div class="col-lg-6">
         <div class="chart-container">
-            <h5 class="mb-4"><i class="bi bi-clipboard-data me-2"></i>Evaluations by Category</h5>
+            <h5 class="mb-4">Evaluations by Category</h5>
             <canvas id="categoryCountChart" height="200"></canvas>
         </div>
     </div>
@@ -94,7 +74,7 @@
 <!-- Recent Evaluations Table -->
 <div class="table-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Evaluations</h5>
+        <h5 class="mb-0">Recent Evaluations</h5>
         <a href="{{ route('admin.evaluations') }}" class="btn btn-sm btn-spup">View All</a>
     </div>
     <div class="table-responsive">
@@ -113,7 +93,7 @@
                 @forelse($recentEvaluations as $evaluation)
                     <tr>
                         <td>{{ $evaluation->created_at->format('M d, Y') }}</td>
-                        <td>{{ $evaluation->user->name ?? 'Anonymous' }}</td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeUser($evaluation->user->id ?? $evaluation->id) }}</td>
                         <td>{{ $evaluation->category->name ?? 'Unknown' }}</td>
                         <td>
                             <span class="badge {{ $evaluation->category->type === 'standard' ? 'bg-primary' : 'bg-info' }}">
@@ -205,7 +185,7 @@
                 label: 'Average Rating',
                 data: @json($categoryRatings->pluck('avg_rating')),
                 backgroundColor: '#800000',
-                borderRadius: 5
+                borderRadius: 2
             }]
         },
         options: {
@@ -234,7 +214,7 @@
                 label: 'Total Evaluations',
                 data: @json($categoryStats->pluck('evaluations_count')),
                 backgroundColor: '#FFD700',
-                borderRadius: 5
+                borderRadius: 2
             }]
         },
         options: {

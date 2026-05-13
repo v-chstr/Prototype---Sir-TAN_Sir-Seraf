@@ -8,11 +8,11 @@
     <div class="col-lg-8">
         <div class="card mb-4">
             <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="bi bi-envelope-open me-2"></i>{{ $message->subject }}</h5>
+                <h5 class="mb-0">{{ $message->subject }}</h5>
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between text-muted small mb-3">
-                    <span><i class="bi bi-person me-1"></i>{{ $message->name }} ({{ $message->email }})</span>
+                    <span><i class="bi bi-person me-1"></i>{{ \App\Helpers\AnonymizeHelper::anonymizeUser($message->id, 'Sender') }}</span>
                     <span><i class="bi bi-clock me-1"></i>{{ $message->created_at->format('M d, Y H:i A') }}</span>
                 </div>
                 <hr>
@@ -23,7 +23,7 @@
         @if($message->admin_reply)
             <div class="card mb-4 border-success">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-reply me-2"></i>Admin Reply</h5>
+                    <h5 class="mb-0">Admin Reply</h5>
                 </div>
                 <div class="card-body">
                     <div class="text-muted small mb-3">
@@ -35,7 +35,7 @@
         @else
             <div class="card">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bi bi-reply me-2"></i>Send Reply</h5>
+                        <h5 class="mb-0">Send Reply</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('admin.messages.reply', $message->id) }}" method="POST">
@@ -56,7 +56,7 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Message Info</h5>
+                <h5 class="mb-0">Message Info</h5>
             </div>
             <div class="card-body">
                 <table class="table table-borderless">
@@ -74,11 +74,11 @@
                     </tr>
                     <tr>
                         <th>From:</th>
-                        <td>{{ $message->name }}</td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeUser($message->id, 'Sender') }}</td>
                     </tr>
                     <tr>
                         <th>Email:</th>
-                        <td><a href="mailto:{{ $message->email }}">{{ $message->email }}</a></td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeEmail($message->id) }}</td>
                     </tr>
                     <tr>
                         <th>Received:</th>

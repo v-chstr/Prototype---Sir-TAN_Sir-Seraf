@@ -6,7 +6,7 @@
 @section('content')
 <div class="table-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="mb-0"><i class="bi bi-clipboard-data me-2"></i>All Evaluations</h5>
+        <h5 class="mb-0">All Evaluations</h5>
         <a href="{{ route('admin.reports') }}" class="btn btn-sm btn-spup">
             <i class="bi bi-download me-1"></i>Export Data
         </a>
@@ -24,11 +24,21 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <select name="role" class="form-select">
+                <option value="">All Roles</option>
+                @foreach($roles as $role)
+                    <option value="{{ $role->id }}" {{ request('role') == $role->id ? 'selected' : '' }}>
+                        {{ $role->display_name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-2">
             <input type="date" name="date_from" class="form-control" placeholder="From Date" 
                    value="{{ request('date_from') }}">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <input type="date" name="date_to" class="form-control" placeholder="To Date" 
                    value="{{ request('date_to') }}">
         </div>
@@ -59,7 +69,7 @@
                     <tr>
                         <td>#{{ $evaluation->id }}</td>
                         <td>{{ $evaluation->created_at->format('M d, Y H:i') }}</td>
-                        <td>{{ $evaluation->user->name ?? 'Anonymous' }}</td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeUser($evaluation->user->id ?? $evaluation->id) }}</td>
                         <td>{{ $evaluation->user->role->display_name ?? 'N/A' }}</td>
                         <td>{{ $evaluation->category->name ?? 'Unknown' }}</td>
                         <td>

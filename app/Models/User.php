@@ -28,6 +28,10 @@ class User extends Authenticatable
         'employee_id',
         'phone',
         'department',
+        'section',
+        'year_level',
+        'course',
+        'gender',
         'is_admin',
     ];
 

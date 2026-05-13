@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h5><i class="bi bi-journal-text me-2"></i>Comprehensive Summary Report</h5>
+    <h5>Comprehensive Summary Report</h5>
     <a href="{{ route('admin.reports.export-summary') }}" class="btn btn-success">
         <i class="bi bi-file-earmark-excel me-2"></i>Export to Excel
     </a>

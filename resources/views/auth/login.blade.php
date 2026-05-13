@@ -59,6 +59,26 @@
                             Don't have an account? <a href="{{ route('register') }}" style="color: var(--spup-primary);">Register here</a>
                         </p>
                     </form>
+
+                    @if(config('app.env') !== 'production')
+                    <hr class="my-3">
+                    <p class="text-center text-muted small mb-2">Dev Quick Login</p>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm flex-fill" onclick="devLogin('chester.tambis.admin@gmail.com', 'password')">
+                            Admin
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm flex-fill" onclick="devLogin('chester.tambis.user@gmail.com', 'password')">
+                            User
+                        </button>
+                    </div>
+                    <script>
+                        function devLogin(email, pass) {
+                            document.getElementById('email').value = email;
+                            document.getElementById('password').value = pass;
+                            document.getElementById('email').focus();
+                        }
+                    </script>
+                    @endif
                 </div>
             </div>
         </div>

@@ -8,7 +8,7 @@
     <div class="col-lg-8">
         <div class="card mb-4">
             <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="bi bi-clipboard-check me-2"></i>Evaluation Responses</h5>
+                <h5 class="mb-0">Evaluation Responses</h5>
             </div>
             <div class="card-body">
                 @foreach($evaluation->responses as $response)
@@ -42,7 +42,7 @@
     <div class="col-lg-4">
         <div class="card mb-4">
             <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Evaluation Info</h5>
+                <h5 class="mb-0">Evaluation Info</h5>
             </div>
             <div class="card-body">
                 <table class="table table-borderless">
@@ -88,17 +88,17 @@
 
         <div class="card">
             <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="bi bi-person me-2"></i>Evaluator Info</h5>
+                <h5 class="mb-0">Evaluator Info</h5>
             </div>
             <div class="card-body">
                 <table class="table table-borderless">
                     <tr>
                         <th>Name:</th>
-                        <td>{{ $evaluation->user->name ?? 'Anonymous' }}</td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeUser($evaluation->user->id ?? $evaluation->id) }}</td>
                     </tr>
                     <tr>
                         <th>Email:</th>
-                        <td>{{ $evaluation->user->email ?? 'N/A' }}</td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeEmail($evaluation->user->id ?? $evaluation->id) }}</td>
                     </tr>
                     <tr>
                         <th>Role:</th>

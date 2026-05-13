@@ -7,6 +7,7 @@ use App\Models\ContactMessage;
 use App\Models\Evaluation;
 use App\Models\EvaluationCategory;
 use App\Models\EvaluationResponse;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -86,6 +87,12 @@ class DashboardController extends Controller
             $query->where('category_id', $request->category);
         }
 
+        if ($request->filled('role')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('role_id', $request->role);
+            });
+        }
+
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
@@ -96,8 +103,9 @@ class DashboardController extends Controller
 
         $evaluations = $query->latest()->paginate(20);
         $categories = EvaluationCategory::active()->get();
+        $roles = Role::whereIn('name', ['student', 'employee', 'guest', 'parent_guardian'])->get();
 
-        return view('admin.evaluations.index', compact('evaluations', 'categories'));
+        return view('admin.evaluations.index', compact('evaluations', 'categories', 'roles'));
     }
 
     public function showEvaluation($id)

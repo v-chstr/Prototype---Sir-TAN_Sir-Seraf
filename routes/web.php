@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +14,10 @@ use Illuminate\Support\Facades\Route;
 | Public Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return auth()->check() ? redirect()->route('home') : redirect()->route('login');
+});
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/standards', [HomeController::class, 'standards'])->name('standards');
 Route::get('/offices', [HomeController::class, 'offices'])->name('offices');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
@@ -65,7 +69,12 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
         Route::get('/users', [DashboardController::class, 'users'])->name('users');
         
         // Categories
-        Route::get('/categories', [DashboardController::class, 'categories'])->name('categories');
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
+        Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::patch('/categories/{id}/toggle', [CategoryController::class, 'toggleActive'])->name('categories.toggle');
         
         // Messages
         Route::get('/messages', [DashboardController::class, 'messages'])->name('messages');

@@ -50,7 +50,7 @@
 
 <!-- Criteria Statistics Table -->
 <div class="table-container mb-4">
-    <h5 class="mb-4"><i class="bi bi-list-ul me-2"></i>Criteria Performance</h5>
+    <h5 class="mb-4">Criteria Performance</h5>
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
@@ -89,7 +89,7 @@
 <!-- Detailed Evaluations -->
 <div class="table-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="mb-0"><i class="bi bi-table me-2"></i>Detailed Evaluations</h5>
+        <h5 class="mb-0">Detailed Evaluations</h5>
         <form action="{{ route('admin.reports.generate') }}" method="POST" class="d-inline">
             @csrf
             <input type="hidden" name="report_type" value="{{ $request->report_type }}">
@@ -117,7 +117,7 @@
                 @forelse($evaluations->take(50) as $evaluation)
                     <tr>
                         <td>{{ $evaluation->created_at->format('M d, Y') }}</td>
-                        <td>{{ $evaluation->user->name ?? 'Anonymous' }}</td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeUser($evaluation->user->id ?? $evaluation->id) }}</td>
                         <td>{{ $evaluation->category->name ?? 'Unknown' }}</td>
                         <td>
                             <span class="badge bg-{{ $evaluation->average_rating >= 4 ? 'success' : ($evaluation->average_rating >= 3 ? 'warning' : 'danger') }}">
@@ -174,7 +174,7 @@
                 label: 'Average Rating',
                 data: @json($criteriaStats->take(10)->pluck('avg_rating')),
                 backgroundColor: '#800000',
-                borderRadius: 5
+                borderRadius: 2
             }]
         },
         options: {

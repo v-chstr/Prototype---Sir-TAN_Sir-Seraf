@@ -8,7 +8,7 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="bi bi-file-earmark-bar-graph me-2"></i>Report Generator</h5>
+                <h5 class="mb-0">Report Generator</h5>
             </div>
             <div class="card-body">
                 <form action="{{ route('admin.reports.generate') }}" method="POST">
@@ -73,7 +73,7 @@
     <div class="col-lg-6">
         <div class="card mb-4">
             <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Quick Exports</h5>
+                <h5 class="mb-0">Quick Exports</h5>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-3">
@@ -89,21 +89,21 @@
 
         <div class="card">
             <div class="card-header bg-white">
-                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Report Types</h5>
+                <h5 class="mb-0">Report Types</h5>
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <strong><i class="bi bi-list-check text-primary me-2"></i>Detailed Report</strong>
+                    <strong class="text-primary">Detailed Report</strong>
                     <p class="small text-muted mb-0">Contains all individual evaluation records with user information, ratings, and comments.</p>
                 </div>
                 <hr>
                 <div class="mb-3">
-                    <strong><i class="bi bi-bar-chart text-success me-2"></i>Summary Report</strong>
+                    <strong class="text-success">Summary Report</strong>
                     <p class="small text-muted mb-0">Aggregated statistics showing average ratings per category and criteria.</p>
                 </div>
                 <hr>
                 <div>
-                    <strong><i class="bi bi-filter text-warning me-2"></i>Category Report</strong>
+                    <strong class="text-warning">Category Report</strong>
                     <p class="small text-muted mb-0">Focused report on a specific evaluation category.</p>
                 </div>
             </div>

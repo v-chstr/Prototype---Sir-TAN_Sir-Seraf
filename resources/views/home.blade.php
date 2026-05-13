@@ -8,7 +8,7 @@
     <div class="container position-relative">
         <div class="row align-items-center">
             <div class="col-lg-6 animate-fade-in">
-                <h1 class="display-4 fw-bold mb-4">SPUP Integrated Evaluation & Feedback System</h1>
+                <h1 class="display-4 fw-bold mb-4">SPUP Customer Feedback & Evaluation System</h1>
                 <p class="lead mb-4">Your feedback matters! Help us improve our services and academic excellence through meaningful evaluations.</p>
                 <div class="d-flex gap-3 flex-wrap">
                     @auth

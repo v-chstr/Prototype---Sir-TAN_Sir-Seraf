@@ -12,6 +12,58 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+    public const DEPARTMENTS = [
+        'S.I.T.E' => 'School of Information Technology and Engineering',
+        'SASTE' => 'School of Arts and Sciences and Teacher Education',
+        'SBAHM' => 'School of Business Administration and Hospitality Management',
+        'SNAHS' => 'School of Nursing and Allied Health Sciences',
+        'SOM' => 'School of Medicine',
+    ];
+
+    public const COURSES = [
+        'S.I.T.E' => [
+            'BSIT' => 'BS Information Technology',
+            'BSCS' => 'BS Computer Science',
+            'BSCpE' => 'BS Computer Engineering',
+            'BSECE' => 'BS Electronics Engineering',
+        ],
+        'SASTE' => [
+            'AB Comm' => 'AB Communication',
+            'AB Psych' => 'AB Psychology',
+            'AB English' => 'AB English',
+            'BSED' => 'Bachelor of Secondary Education',
+            'BEED' => 'Bachelor of Elementary Education',
+        ],
+        'SBAHM' => [
+            'BSBA' => 'BS Business Administration',
+            'BSA' => 'BS Accountancy',
+            'BSHM' => 'BS Hospitality Management',
+            'BSTM' => 'BS Tourism Management',
+        ],
+        'SNAHS' => [
+            'BSN' => 'BS Nursing',
+            'BSMT' => 'BS Medical Technology',
+            'BSP' => 'BS Pharmacy',
+        ],
+        'SOM' => [
+            'MD' => 'Doctor of Medicine',
+        ],
+    ];
+
+    public const YEAR_LEVELS = [
+        '1st Year',
+        '2nd Year',
+        '3rd Year',
+        '4th Year',
+        '5th Year',
+    ];
+
+    public const GENDERS = [
+        'Male',
+        'Female',
+        'Prefer not to say',
+    ];
+
     public function showLoginForm()
     {
         return view('auth.login');
@@ -42,7 +94,11 @@ class AuthController extends Controller
     public function showRegisterForm()
     {
         $roles = Role::all();
-        return view('auth.register', compact('roles'));
+        $departments = self::DEPARTMENTS;
+        $courses = self::COURSES;
+        $yearLevels = self::YEAR_LEVELS;
+        $genders = self::GENDERS;
+        return view('auth.register', compact('roles', 'departments', 'courses', 'yearLevels', 'genders'));
     }
 
     public function register(Request $request)
@@ -56,6 +112,9 @@ class AuthController extends Controller
             'employee_id' => ['nullable', 'string', 'max:50'],
             'phone' => ['nullable', 'string', 'max:20'],
             'department' => ['nullable', 'string', 'max:100'],
+            'course' => ['nullable', 'string', 'max:100'],
+            'year_level' => ['nullable', 'string', 'max:50'],
+            'gender' => ['nullable', 'string', 'max:20'],
         ]);
 
         $user = User::create([
@@ -67,6 +126,9 @@ class AuthController extends Controller
             'employee_id' => $request->employee_id,
             'phone' => $request->phone,
             'department' => $request->department,
+            'course' => $request->course,
+            'year_level' => $request->year_level,
+            'gender' => $request->gender,
         ]);
 
         Auth::login($user);

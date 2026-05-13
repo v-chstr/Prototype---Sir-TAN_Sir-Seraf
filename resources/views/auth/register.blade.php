@@ -61,10 +61,43 @@
                         </div>
 
                         <div class="row mb-3" id="student-fields" style="display: none;">
-                            <div class="col">
+                            <div class="col-md-6 mb-3">
                                 <label for="student_id" class="form-label">Student ID</label>
-                                <input type="text" class="form-control" id="student_id" name="student_id" 
+                                <input type="text" class="form-control" id="student_id" name="student_id"
                                        value="{{ old('student_id') }}" placeholder="e.g., 2024-00001">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-select" id="gender" name="gender">
+                                    <option value="">Select gender...</option>
+                                    @foreach($genders as $g)
+                                        <option value="{{ $g }}" {{ old('gender') == $g ? 'selected' : '' }}>{{ $g }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label for="student_department" class="form-label">Department / School</label>
+                                <select class="form-select" id="student_department" name="department">
+                                    <option value="">Select department...</option>
+                                    @foreach($departments as $code => $label)
+                                        <option value="{{ $code }}" {{ old('department') == $code ? 'selected' : '' }}>{{ $code }} — {{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label for="course" class="form-label">Course</label>
+                                <select class="form-select" id="course" name="course" disabled>
+                                    <option value="">Select department first...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="year_level" class="form-label">Year Level</label>
+                                <select class="form-select" id="year_level" name="year_level">
+                                    <option value="">Select...</option>
+                                    @foreach($yearLevels as $yl)
+                                        <option value="{{ $yl }}" {{ old('year_level') == $yl ? 'selected' : '' }}>{{ $yl }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
@@ -75,8 +108,8 @@
                                        value="{{ old('employee_id') }}" placeholder="e.g., EMP-001">
                             </div>
                             <div class="col-md-6">
-                                <label for="department" class="form-label">Department</label>
-                                <input type="text" class="form-control" id="department" name="department" 
+                                <label for="employee_department" class="form-label">Department</label>
+                                <input type="text" class="form-control" id="employee_department" name="department"
                                        value="{{ old('department') }}" placeholder="e.g., IT Department">
                             </div>
                         </div>
@@ -127,22 +160,71 @@
 
 @push('scripts')
 <script>
-    document.getElementById('role_id').addEventListener('change', function() {
+    const COURSES_BY_DEPT = @json($courses);
+    const OLD_COURSE = @json(old('course'));
+
+    function toggleRoleFields() {
+        const roleSelect = document.getElementById('role_id');
         const studentFields = document.getElementById('student-fields');
         const employeeFields = document.getElementById('employee-fields');
-        const selectedText = this.options[this.selectedIndex].text.toLowerCase();
+        const selectedText = roleSelect.options[roleSelect.selectedIndex].text.toLowerCase();
 
         studentFields.style.display = 'none';
         employeeFields.style.display = 'none';
 
+        // Disable inputs in hidden sections so duplicate "department" names don't conflict
+        document.getElementById('student_department').disabled = true;
+        document.getElementById('course').disabled = true;
+        document.getElementById('year_level').disabled = true;
+        document.getElementById('gender').disabled = true;
+        document.getElementById('student_id').disabled = true;
+        document.getElementById('employee_department').disabled = true;
+        document.getElementById('employee_id').disabled = true;
+
         if (selectedText.includes('student')) {
             studentFields.style.display = 'flex';
+            document.getElementById('student_department').disabled = false;
+            document.getElementById('year_level').disabled = false;
+            document.getElementById('gender').disabled = false;
+            document.getElementById('student_id').disabled = false;
+            populateCourses();
         } else if (selectedText.includes('employee')) {
             employeeFields.style.display = 'flex';
+            document.getElementById('employee_department').disabled = false;
+            document.getElementById('employee_id').disabled = false;
         }
-    });
+    }
+
+    function populateCourses() {
+        const dept = document.getElementById('student_department').value;
+        const courseSelect = document.getElementById('course');
+        courseSelect.innerHTML = '';
+
+        if (!dept || !COURSES_BY_DEPT[dept]) {
+            courseSelect.innerHTML = '<option value="">Select department first...</option>';
+            courseSelect.disabled = true;
+            return;
+        }
+
+        courseSelect.disabled = false;
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Select course...';
+        courseSelect.appendChild(placeholder);
+
+        Object.entries(COURSES_BY_DEPT[dept]).forEach(([code, label]) => {
+            const opt = document.createElement('option');
+            opt.value = code;
+            opt.textContent = code + ' — ' + label;
+            if (OLD_COURSE && OLD_COURSE === code) opt.selected = true;
+            courseSelect.appendChild(opt);
+        });
+    }
+
+    document.getElementById('role_id').addEventListener('change', toggleRoleFields);
+    document.getElementById('student_department').addEventListener('change', populateCourses);
 
     // Trigger on page load for old values
-    document.getElementById('role_id').dispatchEvent(new Event('change'));
+    toggleRoleFields();
 </script>
 @endpush

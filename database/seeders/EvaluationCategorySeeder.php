@@ -124,6 +124,71 @@ class EvaluationCategorySeeder extends Seeder
                     'Support for student organizations is adequate',
                 ],
             ],
+            [
+                'name' => 'Business Affairs Office',
+                'type' => 'office',
+                'description' => 'Evaluate the Business Affairs Office services',
+                'icon' => 'bi-briefcase',
+                'criteria' => [
+                    'Financial transactions are processed efficiently',
+                    'Staff are courteous and professional',
+                    'Billing and payment information is clear and accurate',
+                    'Office hours and availability are convenient',
+                    'Concerns and inquiries are addressed promptly',
+                ],
+            ],
+            [
+                'name' => 'Christian Formation Office',
+                'type' => 'office',
+                'description' => 'Evaluate the Christian Formation Office services',
+                'icon' => 'bi-journal-bookmark',
+                'criteria' => [
+                    'Spiritual programs and activities are meaningful',
+                    'Staff are approachable and supportive',
+                    'Retreats and recollections are well-organized',
+                    'Values formation activities are effective',
+                    'The office promotes an inclusive spiritual environment',
+                ],
+            ],
+            [
+                'name' => 'Guidance Office',
+                'type' => 'office',
+                'description' => 'Evaluate the Guidance Office services',
+                'icon' => 'bi-chat-heart',
+                'criteria' => [
+                    'Counseling services are accessible and confidential',
+                    'Staff are empathetic and professional',
+                    'Career guidance and support are helpful',
+                    'Response time to student concerns is satisfactory',
+                    'Programs on mental health awareness are effective',
+                ],
+            ],
+            [
+                'name' => 'Library Services',
+                'type' => 'office',
+                'description' => 'Evaluate the Library services and resources',
+                'icon' => 'bi-book',
+                'criteria' => [
+                    'Library resources and collections are adequate',
+                    'Staff are helpful and knowledgeable',
+                    'The library environment is conducive to study',
+                    'Online library services are accessible and functional',
+                    'Operating hours are convenient for students',
+                ],
+            ],
+            [
+                'name' => 'CPRINT Office',
+                'type' => 'office',
+                'description' => 'Evaluate the CPRINT Office services',
+                'icon' => 'bi-printer',
+                'criteria' => [
+                    'Printing and publication services are efficient',
+                    'Staff are courteous and professional',
+                    'Turnaround time for requests is satisfactory',
+                    'Quality of printed materials is acceptable',
+                    'Pricing of services is reasonable',
+                ],
+            ],
         ];
 
         foreach (array_merge($standards, $offices) as $categoryData) {

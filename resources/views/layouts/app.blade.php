@@ -13,9 +13,9 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            --spup-primary: #800000;
+            --spup-primary: #198754;
             --spup-secondary: #FFD700;
-            --spup-dark: #4a0000;
+            --spup-dark: #0d5c36;
         }
 
         body {
@@ -54,7 +54,7 @@
             background: linear-gradient(135deg, var(--spup-dark) 0%, var(--spup-primary) 100%);
             color: var(--spup-secondary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(128, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3);
         }
 
         .btn-outline-spup {
@@ -99,7 +99,7 @@
         }
 
         footer {
-            background: linear-gradient(135deg, var(--spup-dark) 0%, #2a0000 100%);
+            background: linear-gradient(135deg, var(--spup-dark) 0%, #064225 100%);
             color: #fff;
             padding: 40px 0 20px;
         }
@@ -275,5 +275,16 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     @stack('scripts')
+    @auth
+    <script>
+        // If the browser restores this page from bfcache (back/forward button after logout),
+        // force a real request so the auth middleware can redirect unauthenticated users.
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
+    @endauth
 </body>
 </html>

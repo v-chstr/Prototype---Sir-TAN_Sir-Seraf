@@ -6,6 +6,29 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    /* SPUP Brand Colors */
+    --color-spup-primary: #198754;
+    --color-spup-dark: #0d5c36;
+    --color-spup-accent: #FFD700;
+    --color-spup-light: #e8f5e9;
+
+    /* Semantic Rating Colors */
+    --color-rating-excellent: #198754;
+    --color-rating-good: #ffc107;
+    --color-rating-poor: #dc3545;
+
+    /* Surface Colors */
+    --color-surface-body: #f4f6f9;
+    --color-surface-card: #ffffff;
+    --color-surface-border: #e8e8e8;
+    --color-surface-muted: #f8f9fa;
+
+    /* Sidebar */
+    --color-sidebar-bg: #0d5c36;
+    --color-sidebar-hover: rgba(255, 255, 255, 0.1);
+    --color-sidebar-active: rgba(255, 255, 255, 0.15);
+    --color-sidebar-text: rgba(255, 255, 255, 0.8);
+    --color-sidebar-section: rgba(255, 255, 255, 0.5);
 }

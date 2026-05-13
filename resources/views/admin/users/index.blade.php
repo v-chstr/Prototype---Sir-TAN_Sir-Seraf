@@ -6,7 +6,7 @@
 @section('content')
 <div class="table-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="mb-0"><i class="bi bi-people me-2"></i>All Users</h5>
+        <h5 class="mb-0">All Users</h5>
         <span class="badge bg-primary">{{ $users->total() }} Total Users</span>
     </div>
 
@@ -30,12 +30,12 @@
                             <div class="d-flex align-items-center">
                                 <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" 
                                      style="width: 35px; height: 35px;">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    {{ \App\Helpers\AnonymizeHelper::anonymizeInitial($user->id) }}
                                 </div>
-                                {{ $user->name }}
+                                {{ \App\Helpers\AnonymizeHelper::anonymizeUser($user->id, 'User') }}
                             </div>
                         </td>
-                        <td>{{ $user->email }}</td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeEmail($user->id) }}</td>
                         <td>
                             <span class="badge bg-secondary">{{ $user->role->display_name ?? 'No Role' }}</span>
                         </td>
@@ -56,8 +56,10 @@
         </table>
     </div>
 
-    <div class="d-flex justify-content-center mt-4">
+    @if($users->hasPages())
+    <div class="pagination-wrapper">
         {{ $users->links() }}
     </div>
+    @endif
 </div>
 @endsection

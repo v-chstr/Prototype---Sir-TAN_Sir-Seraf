@@ -15,9 +15,9 @@
     
     <style>
         :root {
-            --spup-primary: #800000;
+            --spup-primary: #198754;
             --spup-secondary: #FFD700;
-            --spup-dark: #4a0000;
+            --spup-dark: #0d5c36;
             --sidebar-width: 260px;
         }
 
@@ -109,44 +109,43 @@
         }
 
         .stat-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            box-shadow: none;
+            transition: all 0.2s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
         }
 
         .stat-card .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
 
         .chart-container {
             background: #fff;
-            border-radius: 15px;
+            border-radius: 4px;
             padding: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
         }
 
         .table-container {
             background: #fff;
-            border-radius: 15px;
+            border-radius: 4px;
             padding: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
         }
 
         .badge-status {
             padding: 5px 10px;
-            border-radius: 20px;
+            border-radius: 2px;
             font-size: 0.75rem;
         }
 
@@ -159,6 +158,63 @@
         .btn-spup:hover {
             background: linear-gradient(135deg, var(--spup-dark) 0%, var(--spup-primary) 100%);
             color: var(--spup-secondary);
+        }
+
+        /* Pagination */
+        .pagination-wrapper {
+            padding-top: 16px;
+            border-top: 1px solid #e8e8e8;
+            margin-top: 16px;
+        }
+
+        .pagination-wrapper nav {
+            width: 100%;
+        }
+
+        /* Bootstrap-5 paginator inner containers */
+        .pagination-wrapper nav > div {
+            width: 100%;
+        }
+
+        .pagination-wrapper .pagination {
+            margin-bottom: 0;
+        }
+
+        /* "Showing X to Y" text */
+        .pagination-wrapper nav p {
+            font-size: 0.82rem;
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .pagination .page-link {
+            border: 1px solid #e8e8e8;
+            color: #444;
+            font-size: 0.82rem;
+            padding: 5px 11px;
+            border-radius: 2px !important;
+            margin: 0 1px;
+            background: #fff;
+            transition: background 0.15s, color 0.15s;
+            box-shadow: none !important;
+        }
+
+        .pagination .page-link:hover {
+            background: #f0f0f0;
+            border-color: #d0d0d0;
+            color: #222;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--spup-primary);
+            border-color: var(--spup-primary);
+            color: #fff;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background: #fafafa;
+            border-color: #e8e8e8;
+            color: #bbb;
         }
 
         @media (max-width: 768px) {
@@ -240,7 +296,7 @@
                 <h5 class="mb-0">@yield('page-title', 'Dashboard')</h5>
             </div>
             <div class="d-flex align-items-center">
-                <span class="me-3"><i class="bi bi-person-circle me-1"></i>{{ auth()->user()->name }}</span>
+                <span class="me-3"><i class="bi bi-person-circle me-1"></i>Administrator</span>
                 <span class="badge bg-success">Admin</span>
             </div>
         </div>
@@ -267,5 +323,14 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     @stack('scripts')
+    <script>
+        // If the browser restores this page from bfcache (back/forward button after logout),
+        // force a real request so the auth middleware can redirect unauthenticated users.
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 </html>

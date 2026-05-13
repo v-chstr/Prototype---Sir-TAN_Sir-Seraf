@@ -6,7 +6,7 @@
 @section('content')
 <div class="table-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="mb-0"><i class="bi bi-envelope me-2"></i>Contact Messages</h5>
+        <h5 class="mb-0">Contact Messages</h5>
     </div>
 
     <div class="table-responsive">
@@ -25,8 +25,8 @@
                 @forelse($messages as $message)
                     <tr class="{{ $message->status === 'unread' ? 'table-warning' : '' }}">
                         <td>{{ $message->created_at->format('M d, Y H:i') }}</td>
-                        <td>{{ $message->name }}</td>
-                        <td>{{ $message->email }}</td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeUser($message->id, 'Sender') }}</td>
+                        <td>{{ \App\Helpers\AnonymizeHelper::anonymizeEmail($message->id) }}</td>
                         <td>{{ Str::limit($message->subject, 30) }}</td>
                         <td>
                             @if($message->status === 'unread')
@@ -56,8 +56,10 @@
         </table>
     </div>
 
-    <div class="d-flex justify-content-center mt-4">
+    @if($messages->hasPages())
+    <div class="pagination-wrapper">
         {{ $messages->links() }}
     </div>
+    @endif
 </div>
 @endsection
