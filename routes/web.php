@@ -21,7 +21,9 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/standards', [HomeController::class, 'standards'])->name('standards');
 Route::get('/offices', [HomeController::class, 'offices'])->name('offices');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +32,9 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 */
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,10');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -44,7 +46,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 */
 Route::middleware('auth')->group(function () {
     Route::get('/evaluation/{id}', [EvaluationController::class, 'show'])->name('evaluation.show');
-    Route::post('/evaluation/{id}', [EvaluationController::class, 'store'])->name('evaluation.store');
+    Route::post('/evaluation/{id}', [EvaluationController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('evaluation.store');
     Route::get('/thank-you', [EvaluationController::class, 'thankYou'])->name('evaluation.thank-you');
 });
 
@@ -53,7 +57,7 @@ Route::middleware('auth')->group(function () {
 | Admin Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class, 'no-cache'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

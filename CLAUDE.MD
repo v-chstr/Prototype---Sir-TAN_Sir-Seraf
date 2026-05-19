@@ -86,7 +86,7 @@ resources/views/layouts/admin.blade.php — Admin layout + CSS
 | `admin/evaluations/index.blade.php` | Evaluations listing with filters |
 | `admin/evaluations/show.blade.php` | Single evaluation detail |
 | `admin/users/index.blade.php` | User management table |
-| `admin/messages/index.blade.php` | Contact messages list |
+| `/messages/index.blade.php` | Contact messages list |
 | `admin/messages/show.blade.php` | Message detail + reply |
 | `admin/reports/index.blade.php` | Report generator form |
 | `admin/reports/result.blade.php` | Generated report view |
@@ -108,5 +108,5 @@ resources/views/layouts/admin.blade.php — Admin layout + CSS
 ---
 
 ## Session Reporting
-After each task session, a session report is provided in the chat (not as a file).
+LAfter each task session, a session report is provided in the chat (not as a file).
 Contains: Changes made, files modified, design decisions, open items.

@@ -32,7 +32,6 @@ class User extends Authenticatable
         'year_level',
         'course',
         'gender',
-        'is_admin',
     ];
 
     /**

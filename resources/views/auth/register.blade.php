@@ -156,6 +156,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0]?.type === 'back_forward')) {
+            window.location.reload();
+        }
+    });
+</script>
 @endsection
 
 @push('scripts')

@@ -37,8 +37,8 @@ class DashboardController extends Controller
             ->get();
 
         // Get monthly evaluation counts for chart
-        $monthlyData = Evaluation::selectRaw("CAST(strftime('%m', created_at) AS INTEGER) as month, COUNT(*) as count")
-            ->whereRaw("strftime('%Y', created_at) = ?", [date('Y')])
+        $monthlyData = Evaluation::selectRaw("MONTH(created_at) as month, COUNT(*) as count")
+            ->whereYear('created_at', date('Y'))
             ->where('status', 'submitted')
             ->groupBy('month')
             ->orderBy('month')
@@ -167,8 +167,8 @@ class DashboardController extends Controller
     public function chartData()
     {
         // Monthly evaluation trend
-        $monthlyTrend = Evaluation::selectRaw("CAST(strftime('%m', created_at) AS INTEGER) as month, COUNT(*) as count")
-            ->whereRaw("strftime('%Y', created_at) = ?", [date('Y')])
+        $monthlyTrend = Evaluation::selectRaw("MONTH(created_at) as month, COUNT(*) as count")
+            ->whereYear('created_at', date('Y'))
             ->where('status', 'submitted')
             ->groupBy('month')
             ->orderBy('month')

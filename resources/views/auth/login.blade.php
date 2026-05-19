@@ -84,4 +84,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    // If this page is restored from the browser's back-forward cache after
+    // the user has logged in, force a reload so the server can redirect
+    // them away from the login screen.
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0]?.type === 'back_forward')) {
+            window.location.reload();
+        }
+    });
+</script>
 @endsection

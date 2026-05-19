@@ -26,6 +26,21 @@ class EvaluationController extends Controller
             $query->active()->ordered();
         }])->findOrFail($id);
 
+        $academicYear = date('Y') . '-' . (date('Y') + 1);
+        $semester     = $this->getCurrentSemester();
+
+        $alreadySubmitted = Evaluation::where('user_id', Auth::id())
+            ->where('category_id', $category->id)
+            ->where('academic_year', $academicYear)
+            ->where('semester', $semester)
+            ->exists();
+
+        if ($alreadySubmitted) {
+            return redirect()->route('home')->withErrors([
+                'evaluation' => 'You have already submitted an evaluation for this category this semester.',
+            ]);
+        }
+
         $rules = [];
         foreach ($category->criteria as $criteria) {
             $rules["rating_{$criteria->id}"] = ['required', 'integer', 'min:1', 'max:5'];
@@ -35,13 +50,13 @@ class EvaluationController extends Controller
 
         $request->validate($rules);
 
-        DB::transaction(function () use ($request, $category) {
+        DB::transaction(function () use ($request, $category, $academicYear, $semester) {
             $evaluation = Evaluation::create([
                 'user_id' => Auth::id(),
                 'category_id' => $category->id,
-                'academic_year' => date('Y') . '-' . (date('Y') + 1),
-                'semester' => $this->getCurrentSemester(),
-                'overall_comment' => $request->overall_comment,
+                'academic_year' => $academicYear,
+                'semester' => $semester,
+                'overall_comment' => strip_tags((string) $request->overall_comment),
                 'status' => 'submitted',
             ]);
 
@@ -50,7 +65,7 @@ class EvaluationController extends Controller
                     'evaluation_id' => $evaluation->id,
                     'criteria_id' => $criteria->id,
                     'rating' => $request->input("rating_{$criteria->id}"),
-                    'comment' => $request->input("comment_{$criteria->id}"),
+                    'comment' => strip_tags((string) $request->input("comment_{$criteria->id}")),
                 ]);
             }
         });

@@ -10,19 +10,24 @@ class ContactController extends Controller
 {
     public function store(Request $request)
     {
+        // Honeypot: real users never fill the hidden `website` field.
+        if ($request->filled('website')) {
+            return back()->with('success', 'Your message has been sent successfully. We will get back to you soon.');
+        }
+
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s\.\-\']+$/u'],
+            'email' => ['required', 'email:rfc', 'max:255'],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:2000'],
         ]);
 
         ContactMessage::create([
             'user_id' => Auth::id(),
-            'name' => $request->name,
+            'name' => strip_tags($request->name),
             'email' => $request->email,
-            'subject' => $request->subject,
-            'message' => $request->message,
+            'subject' => strip_tags($request->subject),
+            'message' => strip_tags($request->message),
         ]);
 
         return back()->with('success', 'Your message has been sent successfully. We will get back to you soon.');
