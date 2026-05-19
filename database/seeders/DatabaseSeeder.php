@@ -15,8 +15,6 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             EvaluationCategorySeeder::class,
             AdminSeeder::class,
-            UserSeeder::class,
-            EvaluationSeeder::class,
         ]);
     }
 }
