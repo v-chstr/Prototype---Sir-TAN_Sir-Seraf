@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
 use App\Models\Evaluation;
@@ -105,7 +106,13 @@ class DashboardController extends Controller
         $categories = EvaluationCategory::active()->get();
         $roles = Role::whereIn('name', ['student', 'employee', 'guest', 'parent_guardian'])->get();
 
-        return view('admin.evaluations.index', compact('evaluations', 'categories', 'roles'));
+        $studentRole = Role::where('name', 'student')->first();
+        $studentRoleId = $studentRole?->id;
+        $departments = AuthController::DEPARTMENTS;
+        $coursesByDept = AuthController::COURSES;
+        $yearLevels = AuthController::YEAR_LEVELS;
+
+        return view('admin.evaluations.index', compact('evaluations', 'categories', 'roles', 'studentRoleId', 'departments', 'coursesByDept', 'yearLevels'));
     }
 
     public function showEvaluation($id)
