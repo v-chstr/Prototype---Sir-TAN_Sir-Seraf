@@ -114,88 +114,84 @@ class ReportController extends Controller
 
     private function streamSummaryCsv($categories, string $filename)
     {
-        $headers = [
-            'Content-Type'        => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Cache-Control'       => 'no-store, no-cache',
-        ];
+        $rows = [];
+        $rows[] = ['Category', 'Type', 'Criteria/Question', 'Average Rating', 'Total Responses', 'Rating Label'];
 
-        $callback = function () use ($categories) {
-            $handle = fopen('php://output', 'w');
-            // BOM for Excel UTF-8 compatibility
-            fwrite($handle, "\xEF\xBB\xBF");
-            fputcsv($handle, ['Category', 'Type', 'Criteria/Question', 'Average Rating', 'Total Responses', 'Rating Label']);
+        foreach ($categories as $category) {
+            $totalRating    = 0;
+            $totalResponses = 0;
 
-            foreach ($categories as $category) {
-                $totalRating   = 0;
-                $totalResponses = 0;
+            foreach ($category->criteria ?? [] as $criteria) {
+                $responses = $criteria->responses ?? collect();
+                $avg   = (float) ($responses->avg('rating') ?? 0);
+                $count = $responses->count();
 
-                foreach ($category->criteria as $criteria) {
-                    $responses = $criteria->responses;
-                    $avg   = $responses->avg('rating') ?? 0;
-                    $count = $responses->count();
+                $rows[] = [
+                    (string) ($category->name ?? ''),
+                    ucfirst((string) ($category->type ?? '')),
+                    (string) ($criteria->question ?? ''),
+                    number_format($avg, 2),
+                    $count,
+                    $this->getRatingLabel($avg),
+                ];
 
-                    fputcsv($handle, [
-                        $category->name,
-                        ucfirst($category->type),
-                        $criteria->question,
-                        number_format($avg, 2),
-                        $count,
-                        $this->getRatingLabel($avg),
-                    ]);
-
-                    $totalRating    += $avg * $count;
-                    $totalResponses += $count;
-                }
-
-                $overallAvg = $totalResponses > 0 ? $totalRating / $totalResponses : 0;
-                fputcsv($handle, [
-                    $category->name . ' (OVERALL)',
-                    ucfirst($category->type),
-                    '--- CATEGORY AVERAGE ---',
-                    number_format($overallAvg, 2),
-                    $category->evaluations->count(),
-                    $this->getRatingLabel($overallAvg),
-                ]);
-                fputcsv($handle, ['', '', '', '', '', '']);
+                $totalRating    += $avg * $count;
+                $totalResponses += $count;
             }
 
-            fclose($handle);
-        };
+            $overallAvg = $totalResponses > 0 ? $totalRating / $totalResponses : 0.0;
+            $rows[] = [
+                ($category->name ?? '') . ' (OVERALL)',
+                ucfirst((string) ($category->type ?? '')),
+                '--- CATEGORY AVERAGE ---',
+                number_format($overallAvg, 2),
+                optional($category->evaluations)->count() ?? 0,
+                $this->getRatingLabel($overallAvg),
+            ];
+            $rows[] = ['', '', '', '', '', ''];
+        }
 
-        return response()->stream($callback, 200, $headers);
+        return $this->csvResponse($rows, $filename);
     }
 
     private function streamEvaluationsCsv($evaluations, string $filename)
     {
-        $headers = [
+        $rows = [];
+        $rows[] = ['ID', 'Date', 'Category', 'Type', 'Average Rating', 'Comment', 'Academic Year', 'Semester'];
+
+        foreach ($evaluations as $evaluation) {
+            $date = $evaluation->created_at ? $evaluation->created_at->format('Y-m-d H:i:s') : '';
+            $rows[] = [
+                (string) $evaluation->id,
+                $date,
+                (string) ($evaluation->category->name ?? 'Unknown'),
+                ucfirst((string) ($evaluation->category->type ?? 'unknown')),
+                number_format((float) ($evaluation->average_rating ?? 0), 2),
+                (string) ($evaluation->overall_comment ?? ''),
+                (string) ($evaluation->academic_year ?? ''),
+                (string) ($evaluation->semester ?? ''),
+            ];
+        }
+
+        return $this->csvResponse($rows, $filename);
+    }
+
+    private function csvResponse(array $rows, string $filename)
+    {
+        $handle = fopen('php://temp', 'r+');
+        fwrite($handle, "\xEF\xBB\xBF");
+        foreach ($rows as $row) {
+            fputcsv($handle, $row);
+        }
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+
+        return response($csv, 200, [
             'Content-Type'        => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             'Cache-Control'       => 'no-store, no-cache',
-        ];
-
-        $callback = function () use ($evaluations) {
-            $handle = fopen('php://output', 'w');
-            fwrite($handle, "\xEF\xBB\xBF");
-            fputcsv($handle, ['ID', 'Date', 'Category', 'Type', 'Average Rating', 'Comment', 'Academic Year', 'Semester']);
-
-            foreach ($evaluations as $evaluation) {
-                fputcsv($handle, [
-                    $evaluation->id,
-                    $evaluation->created_at->format('Y-m-d H:i:s'),
-                    $evaluation->category->name ?? 'Unknown',
-                    ucfirst($evaluation->category->type ?? 'unknown'),
-                    number_format($evaluation->average_rating, 2),
-                    $evaluation->overall_comment ?? '',
-                    $evaluation->academic_year ?? '',
-                    $evaluation->semester ?? '',
-                ]);
-            }
-
-            fclose($handle);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        ]);
     }
 
     private function getRatingLabel(float $rating): string
