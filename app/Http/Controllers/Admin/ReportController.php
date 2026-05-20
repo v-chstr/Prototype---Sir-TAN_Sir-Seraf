@@ -49,7 +49,11 @@ class ReportController extends Controller
 
         if ($request->format === 'excel') {
             if ($request->report_type === 'summary') {
-                return Excel::download(new SummaryReportExport($evaluations, $request->all()), 'summary_report.xlsx');
+                $exportCategories = EvaluationCategory::with(['criteria.responses', 'evaluations'])
+                    ->active()
+                    ->when($request->filled('category_id'), fn($q) => $q->where('id', $request->category_id))
+                    ->get();
+                return Excel::download(new SummaryReportExport($exportCategories), 'summary_report.xlsx');
             }
             return Excel::download(new EvaluationsExport($evaluations), 'evaluations_report.xlsx');
         }
@@ -107,7 +111,7 @@ class ReportController extends Controller
 
     public function exportSummary()
     {
-        $categories = EvaluationCategory::with(['criteria', 'evaluations.responses'])->active()->get();
+        $categories = EvaluationCategory::with(['criteria.responses', 'evaluations'])->active()->get();
         return Excel::download(new SummaryReportExport($categories), 'summary_report.xlsx');
     }
 

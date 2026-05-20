@@ -37,6 +37,9 @@ class Evaluation extends Model
 
     public function getAverageRatingAttribute()
     {
+        if ($this->relationLoaded('responses')) {
+            return $this->responses->avg('rating') ?? 0;
+        }
         return $this->responses()->avg('rating') ?? 0;
     }
 
