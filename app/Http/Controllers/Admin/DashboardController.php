@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
 use App\Models\Evaluation;
@@ -39,7 +38,7 @@ class DashboardController extends Controller
 
         // Get monthly evaluation counts for chart
         $monthlyData = Evaluation::selectRaw("MONTH(created_at) as month, COUNT(*) as count")
-            ->whereYear('created_at', date('Y'))
+            ->whereRaw("YEAR(created_at) = ?", [date('Y')])
             ->where('status', 'submitted')
             ->groupBy('month')
             ->orderBy('month')
@@ -102,15 +101,41 @@ class DashboardController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
+        // Student-specific filters
+        $studentRole = Role::where('name', 'student')->first();
+        $isStudentFilter = $studentRole && $request->filled('role') && $request->role == $studentRole->id;
+
+        if ($isStudentFilter) {
+            if ($request->filled('gender')) {
+                $query->whereHas('user', function ($q) use ($request) {
+                    $q->where('gender', $request->gender);
+                });
+            }
+            if ($request->filled('department')) {
+                $query->whereHas('user', function ($q) use ($request) {
+                    $q->where('department', $request->department);
+                });
+            }
+            if ($request->filled('course')) {
+                $query->whereHas('user', function ($q) use ($request) {
+                    $q->where('course', $request->course);
+                });
+            }
+            if ($request->filled('year_level')) {
+                $query->whereHas('user', function ($q) use ($request) {
+                    $q->where('year_level', $request->year_level);
+                });
+            }
+        }
+
         $evaluations = $query->latest()->paginate(20);
         $categories = EvaluationCategory::active()->get();
         $roles = Role::whereIn('name', ['student', 'employee', 'guest', 'parent_guardian'])->get();
 
-        $studentRole = Role::where('name', 'student')->first();
-        $studentRoleId = $studentRole?->id;
-        $departments = AuthController::DEPARTMENTS;
-        $coursesByDept = AuthController::COURSES;
-        $yearLevels = AuthController::YEAR_LEVELS;
+        $studentRoleId = $studentRole ? $studentRole->id : null;
+        $departments = \App\Http\Controllers\Auth\AuthController::DEPARTMENTS;
+        $coursesByDept = \App\Http\Controllers\Auth\AuthController::COURSES;
+        $yearLevels = ['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year'];
 
         return view('admin.evaluations.index', compact('evaluations', 'categories', 'roles', 'studentRoleId', 'departments', 'coursesByDept', 'yearLevels'));
     }
@@ -175,7 +200,7 @@ class DashboardController extends Controller
     {
         // Monthly evaluation trend
         $monthlyTrend = Evaluation::selectRaw("MONTH(created_at) as month, COUNT(*) as count")
-            ->whereYear('created_at', date('Y'))
+            ->whereRaw("YEAR(created_at) = ?", [date('Y')])
             ->where('status', 'submitted')
             ->groupBy('month')
             ->orderBy('month')

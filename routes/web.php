@@ -79,6 +79,7 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class, 'no-cach
         Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
         Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
         Route::patch('/categories/{id}/toggle', [CategoryController::class, 'toggleActive'])->name('categories.toggle');
+        Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
         
         // Messages
         Route::get('/messages', [DashboardController::class, 'messages'])->name('messages');

@@ -11,6 +11,20 @@
         </a>
     </div>
 
+    @if(session('success'))
+        <div class="col-12"><div class="alert alert-success py-2">{{ session('success') }}</div></div>
+    @endif
+    @if(session('error'))
+        <div class="col-12"><div class="alert alert-danger py-2">{{ session('error') }}</div></div>
+    @endif
+
+    @if(session('success'))
+        <div class="col-12"><div class="alert alert-success py-2">{{ session('success') }}</div></div>
+    @endif
+    @if(session('error'))
+        <div class="col-12"><div class="alert alert-danger py-2">{{ session('error') }}</div></div>
+    @endif
+
     @foreach(['standard' => 'Standards Categories', 'office' => 'Office Categories'] as $type => $label)
     <div class="col-12">
         <div class="card {{ !$loop->last ? 'mb-4' : '' }}">
@@ -59,6 +73,10 @@
                                                     <i class="bi {{ $category->is_active ? 'bi-toggle-on' : 'bi-toggle-off' }}"></i>
                                                 </button>
                                             </form>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Delete"
+                                                onclick="confirmDelete({{ $category->id }}, '{{ addslashes($category->name) }}', {{ $category->evaluations_count }})">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -75,4 +93,40 @@
     </div>
     @endforeach
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:4px;">
+            <div class="modal-header border-bottom">
+                <h6 class="modal-title fw-semibold">Delete Category</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-1">Are you sure you want to delete <strong id="deleteCategoryName"></strong>?</p>
+                <p class="text-muted small mb-0">This will also delete all its questions. This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(id, name, evalCount) {
+    if (evalCount > 0) {
+        alert('Cannot delete "' + name + '" because it has ' + evalCount + ' existing evaluation(s).');
+        return;
+    }
+    document.getElementById('deleteCategoryName').textContent = name;
+    document.getElementById('deleteForm').action = '/admin/categories/' + id;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
 @endsection

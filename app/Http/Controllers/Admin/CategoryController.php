@@ -132,4 +132,19 @@ class CategoryController extends Controller
         $status = $category->is_active ? 'activated' : 'deactivated';
         return back()->with('success', "Category \"{$category->name}\" {$status}.");
     }
+
+    public function destroy($id)
+    {
+        $category = EvaluationCategory::findOrFail($id);
+
+        if ($category->evaluations()->count() > 0) {
+            return back()->with('error', "Cannot delete \"{$category->name}\" because it has existing evaluations.");
+        }
+
+        $name = $category->name;
+        $category->criteria()->delete();
+        $category->delete();
+
+        return back()->with('success', "Category \"{$name}\" deleted successfully.");
+    }
 }

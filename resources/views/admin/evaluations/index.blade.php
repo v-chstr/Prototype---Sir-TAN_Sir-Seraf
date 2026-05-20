@@ -29,7 +29,9 @@
                 <select name="role" id="roleFilter" class="form-select">
                     <option value="">All Roles</option>
                     @foreach($roles as $role)
-                        <option value="{{ $role->id }}" {{ request('role') == $role->id ? 'selected' : '' }}>
+                        <option value="{{ $role->id }}"
+                            {{ request('role') == $role->id ? 'selected' : '' }}
+                            @if($role->name === 'student') data-is-student="1" @endif>
                             {{ $role->display_name }}
                         </option>
                     @endforeach
@@ -52,7 +54,7 @@
         </div>
 
         <!-- Student Sub-Filters -->
-        <div class="row g-3 mt-1" id="studentFilters" style="{{ request('role') == $studentRoleId ? '' : 'display:none;' }}">
+        <div class="row g-3 mt-1" id="studentFilters" style="{{ $studentRoleId && request('role') == $studentRoleId ? '' : 'display:none;' }}">
             <div class="col-md-3">
                 <select name="gender" class="form-select">
                     <option value="">All Genders</option>
@@ -72,7 +74,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <select name="course" id="courseFilter" class="form-select">
+                <select name="course" id="courseFilter" class="form-select" {{ request('department') ? '' : 'disabled' }}>
                     <option value="">All Courses</option>
                 </select>
             </div>
@@ -91,19 +93,16 @@
 
     <script>
         const COURSES_BY_DEPT = @json($coursesByDept);
-        const SELECTED_COURSE  = @json(request('course'));
-        const SELECTED_DEPT    = @json(request('department'));
+        const SELECTED_COURSE = @json(request('course'));
 
         function populateCourses() {
             const dept = document.getElementById('deptFilter').value;
             const sel  = document.getElementById('courseFilter');
             sel.innerHTML = '<option value="">All Courses</option>';
-
             if (!dept || !COURSES_BY_DEPT[dept]) {
                 sel.disabled = true;
                 return;
             }
-
             sel.disabled = false;
             Object.entries(COURSES_BY_DEPT[dept]).forEach(function ([abbr, full]) {
                 const opt = document.createElement('option');
@@ -119,7 +118,13 @@
 
         document.getElementById('roleFilter').addEventListener('change', function () {
             const studentFilters = document.getElementById('studentFilters');
-            studentFilters.style.display = (this.value === '{{ $studentRoleId }}') ? '' : 'none';
+            const selectedOpt = this.options[this.selectedIndex];
+            const isStudent = selectedOpt && selectedOpt.getAttribute('data-is-student') === '1';
+            studentFilters.style.display = isStudent ? '' : 'none';
+            if (!isStudent) {
+                document.getElementById('deptFilter').value = '';
+                populateCourses();
+            }
         });
     </script>
 
