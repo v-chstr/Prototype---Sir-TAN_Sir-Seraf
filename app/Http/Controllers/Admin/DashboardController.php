@@ -130,7 +130,7 @@ class DashboardController extends Controller
 
         $evaluations = $query->latest()->paginate(20);
         $categories = EvaluationCategory::active()->get();
-        $roles = Role::whereIn('name', ['student', 'employee', 'guest', 'parent_guardian'])->get();
+        $roles = Role::whereIn('name', ['student', 'employee', 'guest', 'parent_guardian'])->orderBy('id')->get()->unique('name')->values();
 
         $studentRoleId = $studentRole ? $studentRole->id : null;
         $departments = \App\Http\Controllers\Auth\AuthController::DEPARTMENTS;
