@@ -17,9 +17,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return auth()->check() ? redirect()->route('home') : redirect()->route('login');
 });
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/standards', [HomeController::class, 'standards'])->name('standards');
-Route::get('/offices', [HomeController::class, 'offices'])->name('offices');
+
+// Authenticated landing pages
+Route::middleware('auth')->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/standards', [HomeController::class, 'standards'])->name('standards');
+    Route::get('/offices', [HomeController::class, 'offices'])->name('offices');
+});
+
+// Public contact page
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])
     ->middleware('throttle:5,1')
