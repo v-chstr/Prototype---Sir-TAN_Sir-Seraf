@@ -296,8 +296,138 @@
                 <h5 class="mb-0">@yield('page-title', 'Dashboard')</h5>
             </div>
             <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-sm btn-outline-success me-3" data-bs-toggle="modal" data-bs-target="#userGuideModal">
+                    <i class="bi bi-question-circle me-1"></i>User Guide
+                </button>
                 <span class="me-3"><i class="bi bi-person-circle me-1"></i>Administrator</span>
                 <span class="badge bg-success">Admin</span>
+            </div>
+        </div>
+
+        <!-- User Guide Modal -->
+        <div class="modal fade" id="userGuideModal" tabindex="-1" aria-labelledby="userGuideModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+                <div class="modal-content" style="border-radius:4px;">
+                    <div class="modal-header border-bottom" style="background:#198754;color:#fff;">
+                        <h5 class="modal-title fw-semibold" id="userGuideModalLabel">
+                            <i class="bi bi-book me-2"></i>SPUP Evaluation System &mdash; User Guide
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small mb-3">A step-by-step guide for both <strong>end users</strong> (respondents) and <strong>administrators</strong> on how to operate the evaluation and feedback system.</p>
+
+                        <!-- Section: For End Users -->
+                        <h6 class="fw-semibold text-success mt-3 mb-2">For End Users (Students, Employees, Guests, Parents/Guardians)</h6>
+                        <p class="small text-muted mb-2">This section explains how respondents use the public side of the system to submit evaluations and feedback.</p>
+
+                        <p class="small fw-semibold mb-1">A. Registration &amp; Login</p>
+                        <ol class="small mb-3">
+                            <li>Visit the homepage and click <strong>Register</strong> in the top-right corner.</li>
+                            <li>Select a role: <em>Student</em>, <em>Employee</em>, <em>Guest</em>, or <em>Parent/Guardian</em>.</li>
+                            <li>Fill in the required information. Students must also provide <em>Gender</em>, <em>Department</em>, <em>Course</em>, <em>Year Level</em>, and <em>Section</em>.</li>
+                            <li>Submit the form to create the account, then sign in via the <strong>Login</strong> page.</li>
+                        </ol>
+
+                        <p class="small fw-semibold mb-1">B. Submitting an Evaluation</p>
+                        <ol class="small mb-3">
+                            <li>After logging in, choose either <strong>Standards Evaluation</strong> (Administration Leaders, Learning Environment, Facilities) or <strong>Offices Evaluation</strong> (Healthcare, ICT, Canteen, Registrar, OSA) from the homepage.</li>
+                            <li>Select the specific <em>Category</em> you want to evaluate.</li>
+                            <li>Read each criterion and rate it using the rating scale (1 = lowest, 5 = highest).</li>
+                            <li>Optionally, leave a <em>Comment</em> for additional feedback.</li>
+                            <li>Click <strong>Submit Evaluation</strong>. You'll see a confirmation message once it's saved.</li>
+                            <li>You can submit evaluations for multiple categories &mdash; each submission is recorded separately.</li>
+                        </ol>
+
+                        <p class="small fw-semibold mb-1">C. Sending a Contact Message</p>
+                        <ol class="small mb-3">
+                            <li>Open the <strong>Contact</strong> page from the public site (no login required).</li>
+                            <li>Fill in your name, email, subject, and message.</li>
+                            <li>Click <strong>Send Message</strong>. Admins will receive it in the Messages section and reply via email.</li>
+                        </ol>
+
+                        <p class="small fw-semibold mb-1">D. Privacy Notice</p>
+                        <ul class="small mb-3">
+                            <li>All user identities are <strong>anonymized</strong> on the admin side &mdash; administrators cannot see real names.</li>
+                            <li>Responses are stored confidentially and used only for institutional improvement.</li>
+                        </ul>
+
+                        <hr class="my-3">
+
+                        <h6 class="fw-semibold text-success mt-3 mb-2">For Administrators</h6>
+
+                        <!-- Section 1 -->
+                        <h6 class="fw-semibold text-success mt-3 mb-2">1. Dashboard Overview</h6>
+                        <ol class="small mb-3">
+                            <li>Open the <strong>Dashboard</strong> from the sidebar to view total evaluations, users, messages, and average ratings.</li>
+                            <li>Review the <strong>Monthly Evaluations</strong> chart to track submission trends across the year.</li>
+                            <li>The <strong>Recent Evaluations</strong> table shows the latest submissions with anonymized respondent identifiers.</li>
+                        </ol>
+
+                        <!-- Section 2 -->
+                        <h6 class="fw-semibold text-success mt-3 mb-2">2. Managing Evaluations</h6>
+                        <ol class="small mb-3">
+                            <li>Click <strong>Evaluations</strong> in the sidebar to view all submitted evaluations.</li>
+                            <li>Use the filters at the top to narrow results by <em>Category</em>, <em>Role</em>, or <em>Date Range</em>.</li>
+                            <li>When <strong>Student</strong> is selected as the role, additional filters appear: <em>Gender</em>, <em>Department</em>, <em>Course</em>, and <em>Year Level</em>.</li>
+                            <li>The <strong>Course</strong> dropdown only activates after a <em>Department</em> is selected.</li>
+                            <li>Click the <i class="bi bi-eye"></i> <strong>View</strong> icon to see the full evaluation details, including criteria responses and comments.</li>
+                            <li>Click <strong>Export Data</strong> to download the filtered evaluations as an Excel file.</li>
+                        </ol>
+
+                        <!-- Section 3 -->
+                        <h6 class="fw-semibold text-success mt-3 mb-2">3. Managing Users</h6>
+                        <ol class="small mb-3">
+                            <li>Open <strong>Users</strong> from the sidebar to view all registered accounts.</li>
+                            <li>User identities are anonymized on the frontend (e.g. <code>User-A7F3C2</code>) for confidentiality.</li>
+                            <li>Filter by role to see only students, employees, guests, or parents/guardians.</li>
+                        </ol>
+
+                        <!-- Section 4 -->
+                        <h6 class="fw-semibold text-success mt-3 mb-2">4. Managing Categories</h6>
+                        <ol class="small mb-3">
+                            <li>Open <strong>Categories</strong> from the sidebar to manage <em>Standards</em> and <em>Offices</em> evaluation categories.</li>
+                            <li>Click <strong>+ Add Category</strong> to create a new evaluation category and add its criteria/questions.</li>
+                            <li>Use the <i class="bi bi-pencil"></i> <strong>Edit</strong> button to update a category and its questions.</li>
+                            <li>Use the <strong>toggle</strong> button to activate or deactivate a category &mdash; deactivated categories won't appear to respondents.</li>
+                            <li>Use the <i class="bi bi-trash"></i> <strong>Delete</strong> button to permanently remove a category. Categories with existing evaluations cannot be deleted.</li>
+                        </ol>
+
+                        <!-- Section 5 -->
+                        <h6 class="fw-semibold text-success mt-3 mb-2">5. Messages &amp; Feedback</h6>
+                        <ol class="small mb-3">
+                            <li>Open <strong>Messages</strong> from the sidebar to read contact messages submitted through the website.</li>
+                            <li>Click a message to view its full content and reply via email.</li>
+                            <li>Sender identities are anonymized on the list view.</li>
+                        </ol>
+
+                        <!-- Section 6 -->
+                        <h6 class="fw-semibold text-success mt-3 mb-2">6. Generating Reports</h6>
+                        <ol class="small mb-3">
+                            <li>Click <strong>Generate Reports</strong> in the sidebar to create a custom report.</li>
+                            <li>Select a <em>Category</em>, <em>Date Range</em>, and other filters, then click <strong>Generate</strong>.</li>
+                            <li>The result page shows aggregated ratings, criteria averages, and a detailed table of evaluations.</li>
+                            <li>Click <strong>Summary Report</strong> for an overall snapshot across all categories.</li>
+                            <li>Use the <strong>Export</strong> button on any report to download it as an Excel file.</li>
+                        </ol>
+
+                        <!-- Section 7 -->
+                        <h6 class="fw-semibold text-success mt-3 mb-2">7. Navigation Tips</h6>
+                        <ul class="small mb-3">
+                            <li><strong>Back to Site</strong> &mdash; returns to the public-facing website.</li>
+                            <li><strong>Logout</strong> &mdash; safely ends your admin session.</li>
+                            <li>All sensitive user data is anonymized for privacy &mdash; real names are never displayed on this panel.</li>
+                        </ul>
+
+                        <div class="alert alert-success small mb-0" style="border-radius:4px;">
+                            <i class="bi bi-info-circle me-1"></i>
+                            <strong>Tip:</strong> You can reopen this guide anytime by clicking the <strong>User Guide</strong> button in the top-right corner.
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top">
+                        <button type="button" class="btn btn-sm btn-success" data-bs-dismiss="modal">Got it</button>
+                    </div>
+                </div>
             </div>
         </div>
 
