@@ -59,6 +59,12 @@
                                     <i class="bi bi-file-earmark-excel me-1"></i>Export to Excel
                                 </label>
                             </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="format" value="pdf" id="formatPdf">
+                                <label class="form-check-label" for="formatPdf">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>Export to PDF
+                                </label>
+                            </div>
                         </div>
                     </div>
 

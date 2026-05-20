@@ -90,17 +90,30 @@
 <div class="table-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h5 class="mb-0">Detailed Evaluations</h5>
-        <form action="{{ route('admin.reports.generate') }}" method="POST" class="d-inline">
-            @csrf
-            <input type="hidden" name="report_type" value="{{ $request->report_type }}">
-            <input type="hidden" name="category_id" value="{{ $request->category_id }}">
-            <input type="hidden" name="date_from" value="{{ $request->date_from }}">
-            <input type="hidden" name="date_to" value="{{ $request->date_to }}">
-            <input type="hidden" name="format" value="excel">
-            <button type="submit" class="btn btn-success btn-sm">
-                <i class="bi bi-download me-1"></i>Export to Excel
-            </button>
-        </form>
+        <div class="d-flex gap-2">
+            <form action="{{ route('admin.reports.generate') }}" method="POST" class="d-inline">
+                @csrf
+                <input type="hidden" name="report_type" value="{{ $request->report_type }}">
+                <input type="hidden" name="category_id" value="{{ $request->category_id }}">
+                <input type="hidden" name="date_from" value="{{ $request->date_from }}">
+                <input type="hidden" name="date_to" value="{{ $request->date_to }}">
+                <input type="hidden" name="format" value="pdf">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF
+                </button>
+            </form>
+            <form action="{{ route('admin.reports.generate') }}" method="POST" class="d-inline">
+                @csrf
+                <input type="hidden" name="report_type" value="{{ $request->report_type }}">
+                <input type="hidden" name="category_id" value="{{ $request->category_id }}">
+                <input type="hidden" name="date_from" value="{{ $request->date_from }}">
+                <input type="hidden" name="date_to" value="{{ $request->date_to }}">
+                <input type="hidden" name="format" value="excel">
+                <button type="submit" class="btn btn-success btn-sm">
+                    <i class="bi bi-download me-1"></i>Export to Excel
+                </button>
+            </form>
+        </div>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">

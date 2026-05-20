@@ -8,6 +8,7 @@ use App\Models\EvaluationCategory;
 use App\Models\EvaluationResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -24,7 +25,7 @@ class ReportController extends Controller
             'category_id' => ['nullable', 'exists:evaluation_categories,id'],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
-            'format' => ['required', 'in:view,excel'],
+            'format' => ['required', 'in:view,excel,pdf'],
         ]);
 
         $query = Evaluation::with(['user', 'category', 'responses.criteria'])
@@ -53,6 +54,17 @@ class ReportController extends Controller
                 return $this->streamSummaryCsv($exportCategories, 'summary_report.csv');
             }
             return $this->streamEvaluationsCsv($evaluations, 'evaluations_report.csv');
+        }
+
+        if ($request->format === 'pdf') {
+            $stats         = $this->generateStats($evaluations);
+            $categoryStats = $this->getCategoryStats($query->clone());
+            $criteriaStats = $this->getCriteriaStats($evaluations);
+
+            $pdf = Pdf::loadView('admin.reports.pdf', compact('evaluations', 'stats', 'categoryStats', 'criteriaStats', 'request'))
+                ->setPaper('a4', 'portrait');
+
+            return $pdf->download('evaluation_report_' . now()->format('Ymd_His') . '.pdf');
         }
 
         // Generate statistics for view
