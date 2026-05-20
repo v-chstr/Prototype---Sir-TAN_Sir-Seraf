@@ -8,9 +8,6 @@ use App\Models\EvaluationCategory;
 use App\Models\EvaluationResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\EvaluationsExport;
-use App\Exports\SummaryReportExport;
 
 class ReportController extends Controller
 {
@@ -53,9 +50,9 @@ class ReportController extends Controller
                     ->active()
                     ->when($request->filled('category_id'), fn($q) => $q->where('id', $request->category_id))
                     ->get();
-                return Excel::download(new SummaryReportExport($exportCategories), 'summary_report.xlsx');
+                return $this->streamSummaryCsv($exportCategories, 'summary_report.csv');
             }
-            return Excel::download(new EvaluationsExport($evaluations), 'evaluations_report.xlsx');
+            return $this->streamEvaluationsCsv($evaluations, 'evaluations_report.csv');
         }
 
         // Generate statistics for view
@@ -112,7 +109,102 @@ class ReportController extends Controller
     public function exportSummary()
     {
         $categories = EvaluationCategory::with(['criteria.responses', 'evaluations'])->active()->get();
-        return Excel::download(new SummaryReportExport($categories), 'summary_report.xlsx');
+        return $this->streamSummaryCsv($categories, 'summary_report.csv');
+    }
+
+    private function streamSummaryCsv($categories, string $filename)
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control'       => 'no-store, no-cache',
+        ];
+
+        $callback = function () use ($categories) {
+            $handle = fopen('php://output', 'w');
+            // BOM for Excel UTF-8 compatibility
+            fwrite($handle, "\xEF\xBB\xBF");
+            fputcsv($handle, ['Category', 'Type', 'Criteria/Question', 'Average Rating', 'Total Responses', 'Rating Label']);
+
+            foreach ($categories as $category) {
+                $totalRating   = 0;
+                $totalResponses = 0;
+
+                foreach ($category->criteria as $criteria) {
+                    $responses = $criteria->responses;
+                    $avg   = $responses->avg('rating') ?? 0;
+                    $count = $responses->count();
+
+                    fputcsv($handle, [
+                        $category->name,
+                        ucfirst($category->type),
+                        $criteria->question,
+                        number_format($avg, 2),
+                        $count,
+                        $this->getRatingLabel($avg),
+                    ]);
+
+                    $totalRating    += $avg * $count;
+                    $totalResponses += $count;
+                }
+
+                $overallAvg = $totalResponses > 0 ? $totalRating / $totalResponses : 0;
+                fputcsv($handle, [
+                    $category->name . ' (OVERALL)',
+                    ucfirst($category->type),
+                    '--- CATEGORY AVERAGE ---',
+                    number_format($overallAvg, 2),
+                    $category->evaluations->count(),
+                    $this->getRatingLabel($overallAvg),
+                ]);
+                fputcsv($handle, ['', '', '', '', '', '']);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    private function streamEvaluationsCsv($evaluations, string $filename)
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control'       => 'no-store, no-cache',
+        ];
+
+        $callback = function () use ($evaluations) {
+            $handle = fopen('php://output', 'w');
+            fwrite($handle, "\xEF\xBB\xBF");
+            fputcsv($handle, ['ID', 'Date', 'Category', 'Type', 'Average Rating', 'Comment', 'Academic Year', 'Semester']);
+
+            foreach ($evaluations as $evaluation) {
+                fputcsv($handle, [
+                    $evaluation->id,
+                    $evaluation->created_at->format('Y-m-d H:i:s'),
+                    $evaluation->category->name ?? 'Unknown',
+                    ucfirst($evaluation->category->type ?? 'unknown'),
+                    number_format($evaluation->average_rating, 2),
+                    $evaluation->overall_comment ?? '',
+                    $evaluation->academic_year ?? '',
+                    $evaluation->semester ?? '',
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    private function getRatingLabel(float $rating): string
+    {
+        if ($rating >= 4.5) return 'Excellent';
+        if ($rating >= 3.5) return 'Very Good';
+        if ($rating >= 2.5) return 'Good';
+        if ($rating >= 1.5) return 'Fair';
+        return 'Poor';
     }
 
     private function generateStats($evaluations)
