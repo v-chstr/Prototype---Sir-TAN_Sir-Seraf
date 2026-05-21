@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('hide_navbar', true)
+
 @section('title', 'Login - SPUP Evaluation System')
 
 @section('content')

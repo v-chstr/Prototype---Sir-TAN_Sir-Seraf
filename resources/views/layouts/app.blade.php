@@ -159,6 +159,7 @@
 </head>
 <body>
     <!-- Navigation -->
+    @unless(View::hasSection('hide_navbar'))
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">
@@ -168,6 +169,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
+                @unless(auth()->check() && auth()->user()->isAdmin())
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
@@ -190,6 +192,7 @@
                         </a>
                     </li>
                 </ul>
+                @endunless
                 <ul class="navbar-nav">
                     @auth
                         @if(auth()->user()->isAdmin())
@@ -230,6 +233,7 @@
             </div>
         </div>
     </nav>
+    @endunless
 
     <!-- Main Content -->
     <main>

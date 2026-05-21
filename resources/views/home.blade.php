@@ -12,9 +12,15 @@
                 <p class="lead mb-4">Your feedback matters! Help us improve our services and academic excellence through meaningful evaluations.</p>
                 <div class="d-flex gap-3 flex-wrap">
                     @auth
+                        @if(!auth()->user()->isAdmin())
                         <a href="{{ route('standards') }}" class="btn btn-warning btn-lg px-4">
                             <i class="bi bi-clipboard-check me-2"></i>Start Evaluation
                         </a>
+                        @else
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-warning btn-lg px-4">
+                            <i class="bi bi-speedometer2 me-2"></i>Go to Admin Panel
+                        </a>
+                        @endif
                     @else
                         <a href="{{ route('register') }}" class="btn btn-warning btn-lg px-4">
                             <i class="bi bi-person-plus me-2"></i>Register Now
@@ -33,6 +39,7 @@
 </section>
 
 <!-- Features Section -->
+@if(!auth()->check() || !auth()->user()->isAdmin())
 <section class="py-5">
     <div class="container">
         <div class="text-center mb-5">
@@ -81,8 +88,10 @@
         </div>
     </div>
 </section>
+@endif
 
 <!-- How It Works Section -->
+@if(!auth()->check() || !auth()->user()->isAdmin())
 <section class="py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5">
@@ -132,10 +141,10 @@
             </div>
         </div>
     </div>
-</section>
-
+</section>@endif
 <!-- Call to Action -->
-<section class="py-5" style="background: linear-gradient(135deg, var(--spup-primary) 0%, var(--spup-dark) 100%);">
+@if(!auth()->check() || !auth()->user()->isAdmin())
+<section class="py-5" style="background: linear-gradient(135deg, var(--spup-primary) 0%, var(--spup-dark) 100%);">  
     <div class="container text-center text-white">
         <h2 class="fw-bold mb-3">Ready to Make a Difference?</h2>
         <p class="lead mb-4">Your feedback is valuable in shaping a better learning experience for everyone.</p>
@@ -150,4 +159,5 @@
         @endguest
     </div>
 </section>
+@endif
 @endsection
