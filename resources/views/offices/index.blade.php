@@ -9,6 +9,13 @@
         <p class="text-muted">Rate the quality of service from various university offices and service units</p>
     </div>
 
+    @if(session('already_evaluated'))
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>{{ session('already_evaluated') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <div class="row g-4 justify-content-center">
         @forelse($categories as $category)
             <div class="col-md-4">
@@ -22,9 +29,15 @@
                         <span class="badge bg-secondary mb-3">{{ $category->criteria->count() }} Questions</span>
                         <div class="d-grid">
                             @auth
-                                <a href="{{ route('evaluation.show', $category->id) }}" class="btn btn-spup">
-                                    <i class="bi bi-clipboard-check me-2"></i>Evaluate Now
-                                </a>
+                                @if($evaluatedIds->contains($category->id))
+                                    <button class="btn btn-success" disabled>
+                                        <i class="bi bi-check-circle me-2"></i>Already Evaluated
+                                    </button>
+                                @else
+                                    <a href="{{ route('evaluation.show', $category->id) }}" class="btn btn-spup">
+                                        <i class="bi bi-clipboard-check me-2"></i>Evaluate Now
+                                    </a>
+                                @endif
                             @else
                                 <a href="{{ route('login') }}" class="btn btn-outline-spup">
                                     <i class="bi bi-box-arrow-in-right me-2"></i>Login to Evaluate

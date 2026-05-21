@@ -17,6 +17,14 @@ class EvaluationController extends Controller
             $query->active()->ordered();
         }])->findOrFail($id);
 
+        $alreadyEvaluated = Evaluation::where('user_id', Auth::id())
+            ->where('category_id', $category->id)
+            ->exists();
+
+        if ($alreadyEvaluated) {
+            return redirect()->back()->with('already_evaluated', 'You have already submitted an evaluation for "' . $category->name . '".');
+        }
+
         return view('evaluation.show', compact('category'));
     }
 
@@ -31,14 +39,10 @@ class EvaluationController extends Controller
 
         $alreadySubmitted = Evaluation::where('user_id', Auth::id())
             ->where('category_id', $category->id)
-            ->where('academic_year', $academicYear)
-            ->where('semester', $semester)
             ->exists();
 
         if ($alreadySubmitted) {
-            return redirect()->route('home')->withErrors([
-                'evaluation' => 'You have already submitted an evaluation for this category this semester.',
-            ]);
+            return redirect()->back()->with('already_evaluated', 'You have already submitted an evaluation for "' . $category->name . '".');
         }
 
         $rules = [];
