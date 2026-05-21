@@ -124,6 +124,46 @@ class ReportController extends Controller
         return $this->streamSummaryCsv($categories, 'summary_report.csv');
     }
 
+    public function exportSummaryPdf()
+    {
+        $categories = EvaluationCategory::with(['criteria', 'evaluations.responses'])->active()->get();
+
+        $summary = [];
+        foreach ($categories as $category) {
+            $totalResponses = 0;
+            $totalRating    = 0;
+            $criteriaStats  = [];
+
+            foreach ($category->criteria as $criteria) {
+                $responses   = EvaluationResponse::where('criteria_id', $criteria->id)->get();
+                $avgRating   = $responses->avg('rating') ?? 0;
+                $responseCount = $responses->count();
+
+                $criteriaStats[] = [
+                    'question'       => $criteria->question,
+                    'avg_rating'     => round($avgRating, 2),
+                    'response_count' => $responseCount,
+                ];
+
+                $totalRating    += $avgRating * $responseCount;
+                $totalResponses += $responseCount;
+            }
+
+            $summary[] = [
+                'category'          => $category->name,
+                'type'              => $category->type,
+                'total_evaluations' => $category->evaluations->count(),
+                'overall_avg'       => $totalResponses > 0 ? round($totalRating / $totalResponses, 2) : 0,
+                'criteria_stats'    => $criteriaStats,
+            ];
+        }
+
+        $pdf = Pdf::loadView('admin.reports.summary_pdf', compact('summary'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('summary_report_' . now()->format('Ymd_His') . '.pdf');
+    }
+
     private function streamSummaryCsv($categories, string $filename)
     {
         $rows = [];

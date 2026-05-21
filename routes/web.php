@@ -97,6 +97,7 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class, 'no-cach
         Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
         Route::get('/summary', [ReportController::class, 'summaryReport'])->name('summary');
         Route::get('/reports/export-summary', [ReportController::class, 'exportSummary'])->name('reports.export-summary');
+        Route::get('/reports/export-summary-pdf', [ReportController::class, 'exportSummaryPdf'])->name('reports.export-summary-pdf');
         
         // Chart Data API
         Route::get('/api/chart-data', [DashboardController::class, 'chartData'])->name('api.chart-data');
