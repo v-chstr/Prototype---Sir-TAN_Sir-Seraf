@@ -7,6 +7,15 @@
     <div class="text-center mb-5 animate-fade-in">
         <h2 class="fw-bold"><i class="bi bi-building me-2" style="color: var(--spup-primary);"></i>Offices Evaluation</h2>
         <p class="text-muted">Rate the quality of service from various university offices and service units</p>
+        @if($activePeriod)
+            <div class="d-inline-block px-3 py-1 mt-2" style="background:#e8f5e9; color:#0d5c36; border-radius:4px; font-size:0.85rem;">
+                A.Y. {{ $activePeriod->academic_year }} &middot; {{ $activePeriod->semester }}
+            </div>
+        @else
+            <div class="d-inline-block px-3 py-1 mt-2" style="background:#fff3cd; color:#664d03; border-radius:4px; font-size:0.85rem;">
+                <i class="bi bi-exclamation-triangle me-1"></i> Evaluation period not yet open
+            </div>
+        @endif
     </div>
 
     @if(session('already_evaluated'))
@@ -29,7 +38,11 @@
                         <span class="badge bg-secondary mb-3">{{ $category->criteria->count() }} Questions</span>
                         <div class="d-grid">
                             @auth
-                                @if($evaluatedIds->contains($category->id))
+                                @if(!$activePeriod)
+                                    <button class="btn btn-secondary" disabled>
+                                        <i class="bi bi-lock me-2"></i>Evaluation period not yet open
+                                    </button>
+                                @elseif($evaluatedIds->contains($category->id))
                                     <button class="btn btn-success" disabled>
                                         <i class="bi bi-check-circle me-2"></i>Already Evaluated
                                     </button>

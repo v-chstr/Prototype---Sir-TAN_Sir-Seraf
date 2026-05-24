@@ -45,6 +45,26 @@
                 <input type="date" name="date_to" class="form-control" placeholder="To Date"
                        value="{{ request('date_to') }}">
             </div>
+            <div class="col-md-2">
+                <select name="academic_year" class="form-select">
+                    <option value="">All Academic Years</option>
+                    @foreach($academicYears as $ay)
+                        <option value="{{ $ay }}" {{ request('academic_year') == $ay ? 'selected' : '' }}>
+                            A.Y. {{ $ay }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="semester" class="form-select">
+                    <option value="">All Semesters</option>
+                    @foreach($semesters as $sem)
+                        <option value="{{ $sem }}" {{ request('semester') == $sem ? 'selected' : '' }}>
+                            {{ $sem }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
             <div class="col-md-3">
                 <button type="submit" class="btn btn-spup me-2">
                     <i class="bi bi-filter me-1"></i>Filter

@@ -275,6 +275,13 @@
             </a>
         </nav>
 
+        <div class="nav-section">System</div>
+        <nav class="nav flex-column">
+            <a class="nav-link {{ request()->routeIs('admin.settings*') ? 'active' : '' }}" href="{{ route('admin.settings') }}">
+                <i class="bi bi-gear"></i> Settings
+            </a>
+        </nav>
+
         <div class="nav-section">Navigation</div>
         <nav class="nav flex-column">
             <a class="nav-link" href="{{ route('home') }}">

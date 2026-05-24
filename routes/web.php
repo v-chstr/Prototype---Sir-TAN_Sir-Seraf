@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -101,5 +102,11 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class, 'no-cach
         
         // Chart Data API
         Route::get('/api/chart-data', [DashboardController::class, 'chartData'])->name('api.chart-data');
+
+        // Settings - Academic Period
+        Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+        Route::post('/settings/open-initial', [SettingsController::class, 'openInitial'])->name('settings.open-initial');
+        Route::post('/settings/transition', [SettingsController::class, 'transition'])->name('settings.transition');
+        Route::post('/settings/close', [SettingsController::class, 'close'])->name('settings.close');
     });
 

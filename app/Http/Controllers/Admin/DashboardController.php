@@ -101,6 +101,14 @@ class DashboardController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
+        if ($request->filled('academic_year')) {
+            $query->where('academic_year', $request->academic_year);
+        }
+
+        if ($request->filled('semester')) {
+            $query->where('semester', $request->semester);
+        }
+
         // Student-specific filters
         $studentRole = Role::where('name', 'student')->first();
         $isStudentFilter = $studentRole && $request->filled('role') && $request->role == $studentRole->id;
@@ -137,7 +145,13 @@ class DashboardController extends Controller
         $coursesByDept = \App\Http\Controllers\Auth\AuthController::COURSES;
         $yearLevels = ['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year'];
 
-        return view('admin.evaluations.index', compact('evaluations', 'categories', 'roles', 'studentRoleId', 'departments', 'coursesByDept', 'yearLevels'));
+        $academicYears = Evaluation::whereNotNull('academic_year')
+            ->distinct()
+            ->orderByDesc('academic_year')
+            ->pluck('academic_year');
+        $semesters = ['First Semester', 'Second Semester', 'Summer'];
+
+        return view('admin.evaluations.index', compact('evaluations', 'categories', 'roles', 'studentRoleId', 'departments', 'coursesByDept', 'yearLevels', 'academicYears', 'semesters'));
     }
 
     public function showEvaluation($id)
